@@ -1,0 +1,14 @@
+# Discord Bot Dockerizado
+
+Bot para procesar y reenviar mensajes embeds de Discord.
+
+## Configuración
+
+1. Copia `.env.example` a `.env` y completa los valores
+2. Construye la imagen: `docker-compose build`
+3. Inicia el contenedor: `docker-compose up -d`
+
+## Comandos útiles
+
+- Ver logs: `docker-compose logs -f`
+- Detener el bot: `docker-compose down`
