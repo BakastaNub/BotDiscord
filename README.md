@@ -53,7 +53,7 @@ Contiene el ID del último mensaje procesado para evitar duplicados.
 
 ## Comandos Disponibles
 
-### `/add_forward_rule`
+### `/nueva_regla`
 
 Agrega una nueva regla de reenvío.
 
@@ -61,18 +61,29 @@ Agrega una nueva regla de reenvío.
 
 - `name`: nombre único de la regla.
 - `channel_id`: ID del canal de destino.
-- `min_value_gp`: valor mínimo en GP (oro).
-- `keywords`: lista de palabras clave separadas por comas.
+- `keywords`: palabras clave separadas por coma (ej: `loot, drop, reward`).
+- `min_value_gp`: valor mínimo en GP (opcional, por defecto 0).
+- `specific_levels`: niveles específicos separados por coma (ej: `99,120`, opcional).
 
 **Ejemplo:**
 
 ```
-/add_forward_rule name:Drops channel_id:123456789012345678 min_value_gp:1000000 keywords:loot,drop,has looted
+/nueva_regla name:Drops channel_id:123456789012345678 keywords:loot,drop min_value_gp:1000000
 ```
 
 ---
 
-### `/list_forward_rules`
+### `/eliminar_regla`
+
+Elimina una regla de reenvío por nombre.
+
+**Parámetro:**
+
+- `name`: nombre de la regla a eliminar.
+
+---
+
+### `/ver_reglas`
 
 Muestra una lista de todas las reglas configuradas, incluyendo:
 
@@ -84,7 +95,7 @@ Muestra una lista de todas las reglas configuradas, incluyendo:
 
 ---
 
-### `/reload_forward_config`
+### `/recargar_reglas`
 
 Recarga las reglas desde el archivo `reenvios.json`. Útil si modificas el archivo manualmente.
 
@@ -113,7 +124,7 @@ Si todos los criterios se cumplen, el mensaje se reenvía al canal de destino.
 
 ## Futuras Mejoras
 
-- Comando `/view_forward_rule name:<nombre>` para inspeccionar una regla específica.
+- Comando `/ver_regla name:<nombre>` para inspeccionar una regla específica.
 - Interfaz web para editar reglas visualmente.
 
 ---
