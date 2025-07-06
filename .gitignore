@@ -1,2 +1,6 @@
 .env
 venv
+reenvios.json
+ultimo_reenvio.txt
+build
+dist
