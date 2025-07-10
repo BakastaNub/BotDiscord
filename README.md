@@ -1,6 +1,6 @@
 # Discord Message Forwarding Bot
 
-Este bot permite reenviar mensajes con contenido embebido desde un canal de entrada (por ejemplo, "Anything") hacia otros canales de Discord basándose en reglas configurables. Utiliza comandos de barra (slash commands) para administrar dichas reglas.
+Este bot permite reenviar mensajes con contenido embebido desde un canal de entrada hacia otros canales de Discord basándose en reglas configurables. Además, incluye utilidades para Old School RuneScape (OSRS) como consulta de precios, niveles, kills y gestión de alias para bosses/eventos.
 
 ---
 
@@ -17,7 +17,7 @@ Este bot permite reenviar mensajes con contenido embebido desde un canal de entr
 Instala las dependencias:
 
 ```bash
-pip install discord.py python-dotenv
+pip install discord.py python-dotenv requests fuzzywuzzy beautifulsoup4
 ```
 
 ---
@@ -35,69 +35,114 @@ Contiene las reglas para reenviar mensajes. Ejemplo:
     "channel_id": 123456789012345678,
     "keywords": ["loot", "drop"],
     "min_value_gp": 1000000
-  },
-  {
-    "name": "Muertes",
-    "channel_id": 987654321098765432,
-    "keywords": ["player death", "has died"],
-    "min_value_gp": 0
   }
 ]
 ```
+
+> Si no deseas filtrar por niveles específicos, simplemente omite el campo `specific_levels` en la regla.
 
 ### `ultimo_reenvio.txt`
 
 Contiene el ID del último mensaje procesado para evitar duplicados.
 
+### `aliases.json`
+
+Guarda los alias personalizados para bosses/eventos de OSRS.
+
 ---
 
 ## Comandos Disponibles
 
-### `/nueva_regla`
+### Reglas de Reenvío
 
-Agrega una nueva regla de reenvío.
+- **`/nueva_regla`**  
+  Agrega una nueva regla de reenvío.  
+  **Parámetros:**
 
-**Parámetros:**
+  - `name`: nombre único de la regla.
+  - `channel_id`: ID del canal de destino.
+  - `keywords`: palabras clave separadas por coma.
+  - `min_value_gp`: valor mínimo en GP (opcional, por defecto 0).
+  - `specific_levels`: niveles específicos separados por coma (opcional, deja vacío si no aplica).
 
-- `name`: nombre único de la regla.
-- `channel_id`: ID del canal de destino.
-- `keywords`: palabras clave separadas por coma (ej: `loot, drop, reward`).
-- `min_value_gp`: valor mínimo en GP (opcional, por defecto 0).
-- `specific_levels`: niveles específicos separados por coma (ej: `99,120`, opcional).
+  **Ejemplo:**
 
-**Ejemplo:**
+  ```
+  /nueva_regla name:Drops channel_id:123456789012345678 keywords:loot,drop min_value_gp:1000000
+  ```
 
-```
-/nueva_regla name:Drops channel_id:123456789012345678 keywords:loot,drop min_value_gp:1000000
-```
+- **`/eliminar_regla`**  
+  Elimina una regla de reenvío por nombre.  
+  **Parámetro:**
 
----
+  - `name`: nombre de la regla a eliminar.
 
-### `/eliminar_regla`
+- **`/ver_reglas`**  
+  Muestra una lista de todas las reglas configuradas.
 
-Elimina una regla de reenvío por nombre.
-
-**Parámetro:**
-
-- `name`: nombre de la regla a eliminar.
-
----
-
-### `/ver_reglas`
-
-Muestra una lista de todas las reglas configuradas, incluyendo:
-
-- Nombre
-- Canal de destino
-- Palabras clave
-- Valor mínimo
-- Niveles específicos (si aplica)
+- **`/recargar_reglas`**  
+  Recarga las reglas desde el archivo `reenvios.json`.
 
 ---
 
-### `/recargar_reglas`
+### Utilidades OSRS
 
-Recarga las reglas desde el archivo `reenvios.json`. Útil si modificas el archivo manualmente.
+- **`/price`**  
+  Consulta el precio de un ítem de OSRS.  
+  **Parámetro:**
+
+  - `item`: nombre del ítem.  
+    **Ejemplo:**
+
+  ```
+  /price item:Dragon scimitar
+  ```
+
+- **`/lvls`**  
+  Muestra los niveles de una cuenta OSRS.  
+  **Parámetro:**
+
+  - `username`: nombre exacto del jugador.  
+    **Ejemplo:**
+
+  ```
+  /lvls username:Zezima
+  ```
+
+- **`/kc`**  
+  Muestra los kills de un boss para una cuenta OSRS.  
+  **Parámetros:**
+  - `username`: nombre exacto de la cuenta.
+  - `boss`: nombre o alias del boss (ej: "Vorkath", "Vork").  
+    **Ejemplo:**
+  ```
+  /kc username:Zezima boss:Vork
+  ```
+
+---
+
+### Gestión de Alias
+
+- **`/alias`**  
+  Añade un alias para un boss o evento.  
+  **Parámetros:**
+
+  - `original`: nombre original (ej: "Vorkath").
+  - `alias`: alias que quieres usar (ej: "Vork").  
+    **Ejemplo:**
+
+  ```
+  /alias original:Vorkath alias:Vork
+  ```
+
+- **`/delalias`**  
+  Borra un alias existente.  
+  **Parámetro:**
+
+  - `alias`: el alias a borrar.
+
+- **`/listaliases`**  
+  Muestra todos los alias configurados.
 
 ---
 
@@ -119,6 +164,14 @@ Si todos los criterios se cumplen, el mensaje se reenvía al canal de destino.
 - Los comandos son visibles únicamente para usuarios con acceso al bot.
 - El bot ignora sus propios mensajes y solo procesa mensajes embebidos.
 - Se recomienda usar `ephemeral=True` para que las respuestas a comandos sean visibles solo al usuario que los ejecuta.
+- Para activar el entorno virtual en Windows:
+  ```bash
+  .\venv\Scripts\activate
+  ```
+  Para desactivarlo:
+  ```bash
+  deactivate
+  ```
 
 ---
 
@@ -128,7 +181,3 @@ Si todos los criterios se cumplen, el mensaje se reenvía al canal de destino.
 - Interfaz web para editar reglas visualmente.
 
 ---
-
-## Licencia
-
-MIT

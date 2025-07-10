@@ -4,3 +4,6 @@ reenvios.json
 ultimo_reenvio.txt
 build
 dist
+bot.spec
+bot_activity.log
+config.json
